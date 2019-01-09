@@ -1,0 +1,72 @@
+version: '2'
+services:
+
+  # The Application
+  app:
+    container_name: docker_app
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    working_dir: /var/www
+    volumes:
+      - ${PROJECT_PATH}:/var/www
+    environment:
+      - DB_PORT=33061
+      - DB_HOST=database
+      - REDIS_HOST=redis
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+    env_file: .env
+
+  # The Web Server
+  web:
+    container_name: docker_web
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    working_dir: /var/www
+    volumes_from:
+      - app
+    ports:
+      - 8080:80
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - database:database
+    environment:
+      PMA_ARBITRARY: 1
+      MYSQL_USER: homestead
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3309:80
+
+  # The Database
+  database:
+    container_name: docker_db
+    image: mysql:5.6
+    volumes:
+      - dbdata:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=demo
+      - MYSQL_USER=homestead
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+        - "33061:3306"
+  # redis
+  redis:
+    image: redis:4.0-alpine
+    volumes:
+      - redisdata:/data
+  smtp:
+    image: schickling/mailcatcher
+    ports:
+      - 1080:1080
+
+volumes:
+  dbdata:
+      driver: "local"
+  redisdata:
+      driver: "local"
