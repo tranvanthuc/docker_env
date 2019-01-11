@@ -10,12 +10,6 @@ services:
     working_dir: /var/www
     volumes:
       - ${PROJECT_PATH}:/var/www
-    environment:
-      - DB_PORT=33061
-      - DB_HOST=database
-      - REDIS_HOST=redis
-      - CACHE_DRIVER=redis
-      - SESSION_DRIVER=redis
     env_file: .env
 
   # The Web Server
@@ -24,11 +18,11 @@ services:
     build:
       context: ./web
       dockerfile: Dockerfile
-    working_dir: /var/www
-    volumes_from:
-      - app
+    volumes:
+      - ${PROJECT_PATH}:/var/www
     ports:
       - 8080:80
+    env_file: .env
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -38,7 +32,7 @@ services:
       PMA_ARBITRARY: 1
       MYSQL_USER: homestead
       MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: secret
     ports:
       - 3309:80
 
@@ -52,9 +46,10 @@ services:
       - MYSQL_DATABASE=demo
       - MYSQL_USER=homestead
       - MYSQL_PASSWORD=secret
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=secret
     ports:
-        - "33061:3306"
+        - "3306:3306"
+    env_file: .env
   # redis
   redis:
     image: redis:4.0-alpine
