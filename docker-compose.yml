@@ -74,7 +74,7 @@ services:
     container_name: docker_smtp
     image: schickling/mailcatcher
     ports:
-      - 1080:1080
+      - 1090:1080
 
 #    # elastic search
   elasticsearch:
