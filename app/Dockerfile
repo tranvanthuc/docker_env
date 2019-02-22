@@ -12,6 +12,10 @@ RUN apt-get update && apt-get install -y libmcrypt-dev \
 
 RUN  pecl install grpc
 
+RUN /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024
+RUN /sbin/mkswap /var/swap.1
+RUN /sbin/swapon /var/swap.1
+
 ADD ./php.ini /usr/local/etc/php/conf.d
 
 RUN apt-get install -y nano
