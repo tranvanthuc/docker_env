@@ -18,6 +18,8 @@ RUN apt-get install -y nano
 
 RUN chmod -R 777 /var/www
 
+RUN ulimit -n 65536
+
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
