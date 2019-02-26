@@ -1,4 +1,4 @@
-version: '2.2'
+version: '2'
 services:
 
   # The Application
@@ -38,27 +38,27 @@ services:
     volumes:
       - redisdata:/data
   smtp:
-    container_name: docker_smtp
+    container_name: smtp
     image: schickling/mailcatcher
     ports:
       - 1090:1080
 
 #    # elastic search
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
     container_name: elasticsearch
     environment:
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    - cluster.name=docker-cluster
+    - bootstrap.memory_lock=true
+    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
-      - esdata:/usr/share/elasticsearch/data
+    - esdata:/usr/share/elasticsearch/data
     ports:
-      - 9200:9200
+    - 9200:9200
 
 volumes:
   redisdata:
