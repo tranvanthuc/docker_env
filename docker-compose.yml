@@ -3,7 +3,7 @@ services:
 
   # The Application
   app:
-    container_name: docker_app
+    container_name: neolog_app
     build:
       context: ./app
       dockerfile: Dockerfile
@@ -12,20 +12,20 @@ services:
       - ${PROJECT_PATH}:/var/www
     depends_on:
       - database
-      - redis
+#      - redis
     environment:
       - DB_HOST=database
       - DB_PORT=3306
-      - DB_DATABASE=demo
+      - DB_DATABASE=neolog
       - DB_USERNAME=homestead
       - DB_PASSWORD=secret
-      - CACHE_DRIVER=redis
-      - SESSION_DRIVER=redis
+#      - CACHE_DRIVER=redis
+#      - SESSION_DRIVER=redis
     env_file: .env
 
   # The Web Server
   web:
-    container_name: docker_web
+    container_name: neolog_web
     build:
       context: ./web
       dockerfile: Dockerfile
@@ -36,12 +36,13 @@ services:
     env_file: .env
 
   phpmyadmin:
-    container_name: docker_phpmyadmin
+    container_name: neolog_phpmyadmin
     image: phpmyadmin/phpmyadmin
     depends_on:
       - database
     environment:
       PMA_ARBITRARY: 1
+      MYSQL_DATABASE: neolog
       MYSQL_USER: homestead
       MYSQL_PASSWORD: secret
       MYSQL_ROOT_PASSWORD: secret
@@ -50,51 +51,52 @@ services:
 
   # The Database
   database:
-    container_name: docker_db
+    container_name: neolog_db
     image: mysql:5.6
     volumes:
-      - dbdata:/var/lib/mysql
+      - neologdata:/var/lib/mysql
     environment:
-      - MYSQL_DATABASE=demo
+      - MYSQL_DATABASE=neolog
       - MYSQL_USER=homestead
       - MYSQL_PASSWORD=secret
       - MYSQL_ROOT_PASSWORD=secret
     ports:
       - 3307:3306
-    env_file: .env
   # redis
-  redis:
-    container_name: docker_redis
-    image: redis:4.0-alpine
-    ports:
-      - 6380:6379
-    volumes:
-      - redisdata:/data
-  smtp:
-    container_name: docker_smtp
-    image: schickling/mailcatcher
-    ports:
-      - 1090:1080
+#  redis:
+#    container_name: neolog_redis
+#    image: redis:4.0-alpine
+#    ports:
+#      - 6380:6379
+#    volumes:
+#      - redisdata:/data
+#  smtp:
+#    container_name: neolog_smtp
+#    image: schickling/mailcatcher
+#    ports:
+#      - 1080:1080
 
 #    # elastic search
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
-    container_name: docker_es
-    environment:
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - esdata:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-      - 9300:9300
+#  elasticsearch:
+#    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
+#    container_name: neolog_es
+#    environment:
+#      - cluster.name=docker-cluster
+#      - bootstrap.memory_lock=true
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    volumes:
+#      - esdata:/usr/share/elasticsearch/data
+#    ports:
+#      - 9200:9200
+#      - 9300:9300
 
 volumes:
-  dbdata:
-  redisdata:
-  esdata:
+  neologdata:
+#  redisdata:
+##    driver: "local"
+#  esdata:
+#    driver: "local"
