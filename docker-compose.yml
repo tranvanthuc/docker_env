@@ -48,20 +48,20 @@ services:
     environment:
     - cluster.name=docker-cluster
     - bootstrap.memory_lock=true
-    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    - "ES_JAVA_OPTS=-Xms750m -Xmx750m"
     ulimits:
       memlock:
         soft: -1
         hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-      sigpending:
-        soft: 4096
-        hard: 4096
-      nproc:
-        soft: 4096
-        hard: 4096
+#      nofile:
+#        soft: 65536
+#        hard: 65536
+#      sigpending:
+#        soft: 4096
+#        hard: 4096
+#      nproc:
+#        soft: 4096
+#        hard: 4096
     volumes:
     - esdata:/usr/share/elasticsearch/data
     ports:

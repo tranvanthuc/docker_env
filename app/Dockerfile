@@ -27,8 +27,6 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash
 RUN apt-get install nodejs -y
 RUN npm install -g yarn
 
-#ADD ./limits.conf /etc/security/limits.conf
-
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
 CMD ["php-fpm"]
