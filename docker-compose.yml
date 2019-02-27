@@ -37,11 +37,11 @@ services:
       - 6380:6379
     volumes:
       - redisdata:/data
-  smtp:
-    container_name: smtp
-    image: schickling/mailcatcher
-    ports:
-      - 1090:1080
+#  smtp:
+#    container_name: smtp
+#    image: schickling/mailcatcher
+#    ports:
+#      - 1090:1080
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
     container_name: docker_es
@@ -53,15 +53,15 @@ services:
       memlock:
         soft: -1
         hard: -1
-      nofile:
-        soft: -1
-        hard: -1
-      sigpending:
-        soft: -1
-        hard: -1
-      nproc:
-        soft: -1
-        hard: -1
+#      nofile:
+#        soft: -1
+#        hard: -1
+#      sigpending:
+#        soft: -1
+#        hard: -1
+#      nproc:
+#        soft: -1
+#        hard: -1
     volumes:
     - esdata:/usr/share/elasticsearch/data
 
