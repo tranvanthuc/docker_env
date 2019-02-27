@@ -14,7 +14,7 @@ RUN  pecl install grpc
 
 ADD ./php.ini /usr/local/etc/php/conf.d
 
-ADD ./limits.conf /etc/security
+#ADD ./limits.conf /etc/security
 
 RUN apt-get install -y nano
 

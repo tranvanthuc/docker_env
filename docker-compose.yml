@@ -54,8 +54,8 @@ services:
         soft: -1
         hard: -1
       nofile:
-        soft: 65535
-        hard: 65535
+        soft: 65536
+        hard: 65536
 #      sigpending:
 #        soft: -1
 #        hard: -1
