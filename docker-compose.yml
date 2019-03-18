@@ -1,74 +1,16 @@
 version: '2'
 services:
-
-  # The Application
-  app:
-    container_name: app
-    build:
-      context: ./app
-      dockerfile: Dockerfile
-    working_dir: /var/www
-    volumes:
-      - ${PROJECT_PATH}:/var/www
-    depends_on:
-      - redis
-    environment:
-      - CACHE_DRIVER=redis
-      - SESSION_DRIVER=redis
-    env_file: .env
-
-  # The Web Server
-  web:
-    container_name: web
-    build:
-      context: ./web
-      dockerfile: Dockerfile
-    volumes:
-      - ${PROJECT_PATH}:/var/www
+  jenkins:
+    container_name: jenkins
+    image: 'jenkins/jenkins:lts'
+    labels:
+      kompose.service.type: nodeport
     ports:
-      - 80:80
-    env_file: .env
-
-  # redis
-  redis:
-    container_name: redis
-    image: redis:4.0-alpine
-    ports:
-      - 6380:6379
+    - '8080:8080'
+    - '50000:50000'
     volumes:
-      - redisdata:/data
-#  smtp:
-#    container_name: smtp
-#    image: schickling/mailcatcher
-#    ports:
-#      - 1090:1080
-#  elasticsearch:
-#    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
-#    container_name: docker_es
-#    environment:
-#    - cluster.name=docker-cluster
-#    - bootstrap.memory_lock=true
-#    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#      nofile:
-#        soft: 65535
-#        hard: 65535
-##      sigpending:
-##        soft: -1
-##        hard: -1
-##      nproc:
-##        soft: -1
-##        hard: -1
-#    volumes:
-#    - esdata:/usr/share/elasticsearch/data
-#
-#    ports:
-#    - 9200:9200
-#    - 9300:9300
-
+    - './jenkins/config:/jenkins_config'
+    - './jenkins/home:/var/jenkins_home'
 volumes:
-  redisdata:
-#  esdata:
+  jenkins_data:
+    driver: local
