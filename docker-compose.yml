@@ -1,74 +1,58 @@
-version: '2'
+version: '3'
+
+networks:
+  default: {}
+
 services:
+  redis:
+    image: redis:3.2
+  smtp:
+    image: schickling/mailcatcher
+    ports:
+    - 1080:1080
 
-  # The Application
-  app:
-    container_name: app
-    build:
-      context: ./app
-      dockerfile: Dockerfile
-    working_dir: /var/www
+  # The Database
+  mysql:
+    image: mysql:5.6
     volumes:
-      - ${PROJECT_PATH}:/var/www
-    depends_on:
-      - redis
+    - dbdata:/var/lib/mysql
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    ports:
+    - "4306:3306"
     environment:
-      - CACHE_DRIVER=redis
-      - SESSION_DRIVER=redis
-    env_file: .env
+      MYSQL_DATABASE: demo
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_RANDOM_ROOT_PASSWORD: "false"
+      MYSQL_ROOT_PASSWORD: root
 
-  # The Web Server
   web:
-    container_name: web
     build:
       context: ./web
-      dockerfile: Dockerfile
+    working_dir: /var/www/html
     volumes:
-      - ${PROJECT_PATH}:/var/www
+    - ${PROJECT_PATH}:/var/www/html/
+    - ./web/logs:/var/log/httpd
     ports:
-      - 80:80
+    - 9090:80
+    links:
+    - mysql
+    - redis
+    - smtp
+    depends_on:
+    - mysql
+    environment:
+    - DB_HOST=mysql
+    - DB_PORT=3306
+    - DB_DATABASE=demo
+    - DB_USERNAME=root
+    - DB_PASSWORD=password
+    - CACHE_DRIVER=redis
+    - REDIS_HOST=redis
+    - SESSION_DRIVER=redis
     env_file: .env
 
-  # redis
-  redis:
-    container_name: redis
-    image: redis:4.0-alpine
-    ports:
-      - 6380:6379
-    volumes:
-      - redisdata:/data
-#  smtp:
-#    container_name: smtp
-#    image: schickling/mailcatcher
-#    ports:
-#      - 1090:1080
-#  elasticsearch:
-#    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
-#    container_name: docker_es
-#    environment:
-#    - cluster.name=docker-cluster
-#    - bootstrap.memory_lock=true
-#    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-#    ulimits:
-#      memlock:
-#        soft: -1
-#        hard: -1
-#      nofile:
-#        soft: 65535
-#        hard: 65535
-##      sigpending:
-##        soft: -1
-##        hard: -1
-##      nproc:
-##        soft: -1
-##        hard: -1
-#    volumes:
-#    - esdata:/usr/share/elasticsearch/data
-#
-#    ports:
-#    - 9200:9200
-#    - 9300:9300
-
 volumes:
+  dbdata:
   redisdata:
-#  esdata:
